@@ -1,0 +1,6 @@
+---
+- hosts: master
+  become: sudo
+  become_user: smicro
+  roles:
+  - grafana
