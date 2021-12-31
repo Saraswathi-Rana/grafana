@@ -1,1 +1,62 @@
+---
+- name: Enable Yum repository
+  yum_repository:
+    name: grafana
+    description: Grafana upstream yum repo
+    baseurl: "{{ grafana_repo }}"
+    gpgcheck: yes
+    gpgkey: "{{ grafana_repo_key }}"
+
+- name: Import RPM key
+  rpm_key:
+    key: "{{ grafana_repo_key }}"
+    state: present
+
+- name: get url
+  shell: sudo wget https://dl.grafana.com/enterprise/release/grafana-enterprise-8.3.3-1.x86_64.rpm
+ 
+- name: Install grafana
+  yum:
+    name: grafana-enterprise-8.3.3-1.x86_64.rpm
+    state: present
+
+- name: enable port 3000 in firewall
+  shell: sudo firewall-cmd --permanent --zone=public --add-port=3000/tcp
+
+- name: restart firewall
+  service:
+    name: firewalld
+    state: restarted
+
+- name: enable and start grafana-server
+  service:
+    name: grafana-server
+    enabled: yes
+    state: started
+
+- name: wait for service up
+  uri:
+    url: "http://192.168.43.131:3000"
+    status_code: 200
+  register: __result
+  until: __result.status == 200
+  retries: 120
+  delay: 1
+
+- name: change admin password for grafana gui
+  shell : "grafana-cli admin reset-admin-password {{ grafana_admin_password }}"
+  register: __command_admin
+  changed_when: __command_admin.rc !=0
+
+- name: change admin user
+  lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: "{{ item.before }}"
+    line: "{{ item.after }}"
+  with_items:
+  - { before: "^;admin_user = admin", after: "admin_user = {{ grafana_admin_user }}"}
+  - { before: "^;admin_password = admin", after: "admin_password = {{ grafana_admin_password }}"}
+
+- name: install csv plugins
+  shell: "grafana-cli plugins install marcusolsson-csv-datasource" 
 
