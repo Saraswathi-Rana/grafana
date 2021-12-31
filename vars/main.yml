@@ -1,0 +1,6 @@
+---
+grafana_repo: https://packagecloud.io/grafana/stable/el/$releasever/$basearch
+grafana_repo_key: https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+
+grafana_admin_password: "mypassword"
+grafana_admin_user: "admin"
