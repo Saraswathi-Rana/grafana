@@ -1,17 +1,4 @@
 ---
-- name: Enable Yum repository
-  yum_repository:
-    name: grafana
-    description: Grafana upstream yum repo
-    baseurl: "{{ grafana_repo }}"
-    gpgcheck: yes
-    gpgkey: "{{ grafana_repo_key }}"
-
-- name: Import RPM key
-  rpm_key:
-    key: "{{ grafana_repo_key }}"
-    state: present
-
 - name: get url
   shell: sudo wget https://dl.grafana.com/enterprise/release/grafana-enterprise-8.3.3-1.x86_64.rpm
  
