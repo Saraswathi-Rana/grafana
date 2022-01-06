@@ -1,5 +1,5 @@
 ---
-grafana_url: https://dl.grafana.com/enterprise/release/grafana-enterprise-8.3.3.linux-amd64.tar.gz
+grafana_url: https://dl.grafana.com/enterprise/release/grafana-enterprise-8.1.5.linux-amd64.tar.gz
 
 grafana_admin_password: "mypassword"
 grafana_admin_user: "admin"
