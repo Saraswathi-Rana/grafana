@@ -12,7 +12,7 @@
 
 - name: wait for service up
   uri:
-    url: "http://192.168.43.131:3000"
+    url: "http://sm1.dev.com:3000"
     status_code: 200
   register: __result
   until: __result.status == 200
