@@ -1,20 +1,9 @@
 ---
-- name: get url
-  shell: sudo wget https://dl.grafana.com/enterprise/release/grafana-enterprise-8.3.3-1.x86_64.rpm
- 
-- name: Install grafana
-  yum:
-    name: grafana-enterprise-8.3.3-1.x86_64.rpm
-    state: present
-
-- name: enable port 3000 in firewall
-  shell: sudo firewall-cmd --permanent --zone=public --add-port=3000/tcp
-
-- name: restart firewall
-  service:
-    name: firewalld
-    state: restarted
-
+- name: install grafana
+  unarchive:
+    src: "{{ grafana_url }}"
+    dest: /opt/smicro/grafana
+   
 - name: enable and start grafana-server
   service:
     name: grafana-server
@@ -35,15 +24,7 @@
   register: __command_admin
   changed_when: __command_admin.rc !=0
 
-- name: change admin user
-  lineinfile:
-    path: /etc/grafana/grafana.ini
-    regexp: "{{ item.before }}"
-    line: "{{ item.after }}"
-  with_items:
-  - { before: "^;admin_user = admin", after: "admin_user = {{ grafana_admin_user }}"}
-  - { before: "^;admin_password = admin", after: "admin_password = {{ grafana_admin_password }}"}
-
 - name: install csv plugins
   shell: "grafana-cli plugins install marcusolsson-csv-datasource" 
-
+  notify:
+    - restart grafana
