@@ -3,6 +3,7 @@
   unarchive:
     src: "{{ grafana_url }}"
     dest: /opt/smicro/grafana
+    remote_src: yes
    
 - name: enable and start grafana-server
   service:
