@@ -1,6 +1,7 @@
 ---
 - hosts: master
-  become: sudo
+  become: yes
+  become_method: sudo
   become_user: smicro
   roles:
   - grafana
